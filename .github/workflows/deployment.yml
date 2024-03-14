@@ -1,0 +1,45 @@
+# ENV: Workflow and Jobs level
+# Github default env: https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
+name: 4 Artifacts and Outputs
+on:
+  push:
+    branches:
+      - main
+      - dev
+env: # Using environment variables at Workflow level
+  MONGODB_DB_NAME: gha-demo
+jobs:
+  test:
+    env: # Using envs within a Job
+      MONGODB_CLUSTER_ADDRESS: gha-demo.anxy20b.mongodb.net
+      MONGODB_USERNAME: eduardojavierlv
+      MONGODB_PASSWORD: Y6tCzBbfZRIo5IbM
+      PORT: 8080
+# 186.104.94.241
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: npm-deps-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Run server
+        run: npm start & npx wait-on http://127.0.0.1:$PORT # Using a env var in the workflow template
+      - name: Run tests
+        run: npm test
+      - name: Output information
+        run: |
+          echo "MONGODB_USERNAME: ${{ env.MONGODB_USERNAME }}"
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploying
+        run: |
+          echo "Deploying..."
+          echo "MONGODB_USERNAME: ${{ env.MONGODB_USERNAME }}"
