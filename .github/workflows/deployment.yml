@@ -1,6 +1,9 @@
 # ENV: Workflow and Jobs level
 # Github default env: https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
 # Secrets: Settings -> Secrets -> Actions, no one can view it after creating it
+# Environment Secrets (Public repositories only for non-paid repos)
+# - Settings -> Environments (Create), Add specific secrets on a environment
+# - It can be added reviewers 
 name: 5 Envs & Secrets
 on:
   push:
@@ -11,6 +14,7 @@ env: # Using environment variables at Workflow level
   MONGODB_DB_NAME: gha-demo
 jobs:
   test:
+    environment: testing # Using a Github Environments (no env)
     env: # Using envs within a Job
       MONGODB_CLUSTER_ADDRESS: gha-demo.anxy20b.mongodb.net
       MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
@@ -32,7 +36,7 @@ jobs:
       - name: Run tests
         run: npm test
       - name: Output information
-        run: | # Another way of using env vars
+        run: | # Another way of using env vars, won't be shown since it's a secret
           echo "MONGODB_USERNAME: ${{ env.MONGODB_USERNAME }}"
   deploy:
     needs: test
