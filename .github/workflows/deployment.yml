@@ -1,6 +1,7 @@
 # ENV: Workflow and Jobs level
 # Github default env: https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
-name: 4 Artifacts and Outputs
+# Secrets: Settings -> Secrets -> Actions, no one can view it after creating it
+name: 5 Envs & Secrets
 on:
   push:
     branches:
@@ -12,11 +13,9 @@ jobs:
   test:
     env: # Using envs within a Job
       MONGODB_CLUSTER_ADDRESS: gha-demo.anxy20b.mongodb.net
-      MONGODB_USERNAME: eduardojavierlv
-      MONGODB_PASSWORD: Y6tCzBbfZRIo5IbM
+      MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
+      MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
       PORT: 8080
-# 186.104.94.241
-
     runs-on: ubuntu-latest
     steps:
       - name: Get code
@@ -33,13 +32,13 @@ jobs:
       - name: Run tests
         run: npm test
       - name: Output information
-        run: |
+        run: | # Another way of using env vars
           echo "MONGODB_USERNAME: ${{ env.MONGODB_USERNAME }}"
   deploy:
     needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Deploying
-        run: |
+        run: | # In this example the env won't be shown since it only exists in the job above
           echo "Deploying..."
           echo "MONGODB_USERNAME: ${{ env.MONGODB_USERNAME }}"
