@@ -4,6 +4,7 @@
 # Environment Secrets (Public repositories only for non-paid repos)
 # - Settings -> Environments (Create), Add specific secrets on a environment
 # - It can be added reviewers 
+# - It can add protection rules to specific branches
 name: 5 Envs & Secrets
 on:
   push:
